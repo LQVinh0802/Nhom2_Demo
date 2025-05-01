@@ -1,10 +1,11 @@
-<<<<<<< HEAD
-20
-gsg
-5
-=======
-20
-gsg
-5
->>>>>>> 8fc564fd3fc39a2fca79920929cb85a7a3eb1d0b
-5
+10
+HP101#Nhap mon Tin hoc#2#Bat buoc#Nguyen Van A#Cong nghe thong tin
+HP102#Lap trinh C co ban#3#Tu chon#Tran Thi B#Cong nghe thong tin
+HP103#Cau truc Du lieu#3#Bat buoc#Le Thi C#Cong nghe thong tin
+HP104#Giai thuat#3#Bat buoc#Pham Van D#Cong nghe thong tin
+HP105#Co so Du lieu#3#Tu chon#Vo Thi E#An toan thong tin
+HP106#Ma hoa va Giai ma#2#Tu chon#Dang Thi F#An toan thong tin
+HP107#An toan Mang#2#Bat buoc#Hoang Van G#An toan thong tin
+HP108#Phan tich Malware#2#Tu chon#Lam Thi H#An toan thong tin
+HP109#Kiem thu Tham nhap#3#Tu chon#Ngo Van I#An toan thong tin
+HP110#Quan tri Bao mat#3#Tu chon#Bui Thi K#An toan thong tin
