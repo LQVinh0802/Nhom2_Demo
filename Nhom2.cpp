@@ -261,45 +261,40 @@ void Process()
 		scanf_s("%d", &option);
 		switch (option)
 		{
-		case 1:
-			nhapdulieu();
-			printf("\nXem bang bam:\n");
-			viewTable();
-			break;
-		case 2:
-			Docfile();
-			viewTable();
-			break;
-		case 3:
-			break;
-		
-		case 4: {
-					char mahp[10];
-					printf("Nhap ma hoc phan can xoa: ");
-					rewind(stdin);
-					gets_s(mahp, sizeof(mahp));  // dùng gets_s nếu Visual Studio báo lỗi gets
-
-					if (DeleteHocPhan(mahp)) {
-						printf("Da xoa hoc phan %s thanh cong.\n", mahp);
-						printf("Danh sach hoc phan sau khi xoa:\n");
-						viewTable();
-					}
-					else {
-						printf("Khong tim thay hoc phan %s.\n", mahp);
-					}
-					break;
-		}
-
-		
-		case 8: {
-					int x;
-					printf("Nhap so tin chi: ");
-					scanf("%d", &x);
-					xuatHocPhanTinChiLonHon(x);
-					break;
-		}
-
-
+			case 1:
+				nhapdulieu();
+				printf("\nXem bang bam:\n");
+				viewTable();
+				break;
+			case 2:
+				Docfile();
+				viewTable();
+				break;
+			case 3:
+				break;
+			
+			case 4: 
+			{
+				//char mahp[10];
+				//printf("Nhap ma hoc phan can xoa: ");
+				//rewind(stdin);
+				//gets_s(mahp, sizeof(mahp));  // dùng gets_s nếu Visual Studio báo lỗi gets
+				//if (DeleteHocPhan(mahp)) {
+					//printf("Da xoa hoc phan %s thanh cong.\n", mahp);
+					//printf("Danh sach hoc phan sau khi xoa:\n");
+					//viewTable();//}
+				//else {
+				//	printf("Khong tim thay hoc phan %s.\n", mahp);
+				break;
+			}
+			case 8: 
+			{
+				int x;
+				printf("Nhap so tin chi: ");
+				scanf("%d", &x);
+				xuatHocPhanTinChiLonHon(x);
+				break;
+			}
 		}
 	} while (option != 0);
 }
