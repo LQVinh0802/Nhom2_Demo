@@ -16,7 +16,7 @@ struct hocphan
 	char tenhp[25];
 	int sotc;
 	char loaihp[20];
-	char chunhiemhp[25];
+	char chunhiemhp[15];
 	char chuyennganh[25];
 };
 typedef hocphan ItemType;
@@ -107,7 +107,7 @@ void Insert(ItemType k)
 
 void xuat1hp(hocphan x)
 {
-	printf("%-10s %-25s %-4d \t%-15s %-25s %-25s\n", x.mahp, x.tenhp, x.sotc, x.loaihp, x.chunhiemhp, x.chuyennganh);
+	printf("%-10s %-25s %-4d \t%-15s %-15s %-25s\n", x.mahp, x.tenhp, x.sotc, x.loaihp, x.chunhiemhp, x.chuyennganh);
 }
 //duyệt các phần tử trong bucket
 void TableBucket(int b)
@@ -123,7 +123,7 @@ void TableBucket(int b)
 void viewTable()
 {
 	printf("\t\t\t\t\tDANH SACH HOC PHAN\n");
-	printf("Ma\t\tTen\t\t Tin chi\tLoai\t\t\tChu nhiem\tChuyen Nganh\n");
+	printf("Ma\t\tTen\t\t Tin chi\tLoai\t\tChu nhiem\tChuyen Nganh\n");
 	for (int b = 0; b<MAXSIZE; b++)
 	{
 		if (bucket[b] != NULL)
@@ -181,12 +181,13 @@ void Docfile()
 	fscanf(f, "%d\n", &n);
 	for (int i = 0; i<n; i++)
 	{
-		fscanf(f, "%9[^#]#%24[^#]#%d#%9[^#]#%24[^#]#%24[^\n]\n", key.mahp, key.tenhp, &key.sotc, key.loaihp, key.chunhiemhp, key.chuyennganh);
+		fscanf(f, "%9[^#]#%24[^#]#%d#%9[^#]#%14[^#]#%24[^\n]\n", key.mahp, key.tenhp, &key.sotc, key.loaihp, key.chunhiemhp, key.chuyennganh);
 		Insert(key);
 	}
 	fclose(f);
 }
 
+// cau 4
 int DeleteHocPhan(char* mahp) {
 	for (int b = 0; b < MAXSIZE; b++) {
 		HashNode* p = bucket[b];
@@ -210,7 +211,7 @@ int DeleteHocPhan(char* mahp) {
 	}
 	return 0; // Không tìm thấy
 }
-
+// cau 8
 void xuatHocPhanTinChiLonHon(int x) {
 	int found = 0;
 	printf("\nCAC HOC PHAN CO SO TIN CHI LON HON %d:\n", x);
@@ -276,7 +277,7 @@ void Process()
 					char mahp[10];
 					printf("Nhap ma hoc phan can xoa: ");
 					rewind(stdin);
-					fgets(mahp, sizeof(mahp), stdin);  // dùng gets_s nếu Visual Studio báo lỗi gets
+					gets_s(mahp, sizeof(mahp));  // dùng gets_s nếu Visual Studio báo lỗi gets
 
 					if (DeleteHocPhan(mahp)) {
 						printf("Da xoa hoc phan %s thanh cong.\n", mahp);
