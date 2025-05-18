@@ -9,6 +9,10 @@
 #define TRUE 1
 #define FALSE 0
 using namespace std;
+int currentSize = MAXSIZE;
+int elementCount = 0;
+const float threshold = 0.6;
+void resizeHashTable();
 //Khai báo cấu trúc thông tin học phần
 struct hocphan
 {
@@ -16,7 +20,7 @@ struct hocphan
 	char tenhp[25];
 	int sotc;
 	char loaihp[20];
-	char chunhiemhp[15];
+	char chunhiemhp[25];
 	char chuyennganh[25];
 };
 typedef hocphan ItemType;
@@ -101,13 +105,20 @@ void place(int b, ItemType k)
 //chèn phần tử có khóa k vào bảng băm
 void Insert(ItemType k)
 {
+	if ((float)(elementCount + 1) / currentSize > threshold)
+	{
+		printf("Dang vuot nguong luu tru, dang mo rong bang bam...\n");
+		resizeHashTable();
+	}
+
 	int b = HashFuntion(k.sotc);
 	place(b, k);
+	elementCount++;
 }
 
 void xuat1hp(hocphan x)
 {
-	printf("%-10s %-25s %-4d \t%-15s %-15s %-25s\n", x.mahp, x.tenhp, x.sotc, x.loaihp, x.chunhiemhp, x.chuyennganh);
+	printf("%-10s %-25s %-4d \t%-15s %-25s %-25s\n", x.mahp, x.tenhp, x.sotc, x.loaihp, x.chunhiemhp, x.chuyennganh);
 }
 //duyệt các phần tử trong bucket
 void TableBucket(int b)
@@ -122,8 +133,8 @@ void TableBucket(int b)
 //Tác vụ duyệt toàn bộ bảng băm
 void viewTable()
 {
-	printf("\t\t\t\t\tDANH SACH HOC PHAN\n");
-	printf("Ma\t\tTen\t\t Tin chi\tLoai\t\tChu nhiem\tChuyen Nganh\n");
+	printf("\t\t\t\t\tDANH SACH HOC PHAN KHOA CNTT\n");
+	printf(" Ma\t\tTen hoc phan\t Tin chi\t  Loai\t\t  Chu nhiem\t\t    Chuyen Nganh\n");
 	for (int b = 0; b<MAXSIZE; b++)
 	{
 		if (bucket[b] != NULL)
@@ -181,62 +192,163 @@ void Docfile()
 	fscanf(f, "%d\n", &n);
 	for (int i = 0; i<n; i++)
 	{
-		fscanf(f, "%9[^#]#%24[^#]#%d#%9[^#]#%14[^#]#%24[^\n]\n", key.mahp, key.tenhp, &key.sotc, key.loaihp, key.chunhiemhp, key.chuyennganh);
+		fscanf(f, "%9[^#]#%24[^#]#%d#%9[^#]#%24[^#]#%24[^\n]\n", key.mahp, key.tenhp, &key.sotc, key.loaihp, key.chunhiemhp, key.chuyennganh);
 		Insert(key);
 	}
 	fclose(f);
 }
 
-// cau 4
+//Câu 4
 int DeleteHocPhan(char* mahp) {
-	for (int b = 0; b < MAXSIZE; b++) {
-		HashNode* p = bucket[b];
-		HashNode* prev = NULL;
-
+	for (int i = 0; i < MAXSIZE; i++) {
+		HashNode* p = bucket[i];
+		HashNode* q = NULL;
 		while (p != NULL) {
 			if (_strcmpi(p->Key.mahp, mahp) == 0) {
-				if (prev == NULL) {
-					// Node đầu tiên
-					bucket[b] = p->Next;
-				}
-				else {
-					prev->Next = p->Next;
-				}
-				delete p;
+				HashNode*t = p;
+				p = p->Next;
+				q->Next = p;
+				delete t;
 				return 1; // Thành công
 			}
-			prev = p;
-			p = p->Next;
+			else
+			{
+				q = p;
+				p = p->Next;
+			}	
 		}
 	}
 	return 0; // Không tìm thấy
 }
-// cau 8
-void xuatHocPhanTinChiLonHon(int x) {
-	int found = 0;
-	printf("\nCAC HOC PHAN CO SO TIN CHI LON HON %d:\n", x);
-	printf("Ma\t\tTen\t\t Tin chi\tLoai\t\tChu nhiem\tChuyen Nganh\n");
 
+//Câu 5
+NodePtr search(const char* mahp)
+{
+	for (int b = 0; b < MAXSIZE; b++)
+	{
+		NodePtr p = bucket[b];
+		while (p != NULL)
+		{
+			if (_strcmpi(p->Key.mahp, mahp) == 0) // So sánh không phân biệt hoa thường
+				return p; // Tìm thấy
+			p = p->Next;
+		}
+	}
+	return NULL; // Không tìm thấy
+}
+
+//Câu 6
+void CapNhatHocPhan()
+{
+	char mahp[10];
+	printf("Nhap ma hoc phan can cap nhat: ");
+	rewind(stdin);
+	gets_s(mahp, sizeof(mahp));
+
+	NodePtr p = search(mahp);
+	if (p != NULL)
+	{
+		printf("Thong tin cu:\n");
+		printf(" Ma\t\tTen hoc phan\t Tin chi\t  Loai\t\t  Chu nhiem\t\t    Chuyen Nganh\n");
+		xuat1hp(p->Key);
+
+		printf("\n\tNhap thong tin moi");
+		printf("\nMa hoc phan duoc giu nguyen\n");
+		hocphan newData;
+		strcpy(newData.mahp, p->Key.mahp);  // Giữ nguyên khóa chính
+		printf("Nhap ten hoc phan: ");
+		rewind(stdin); gets_s(newData.tenhp, sizeof(newData.tenhp));
+
+		printf("Nhap so tin chi: ");
+		scanf("%d", &newData.sotc);
+
+		printf("Nhap loai hoc phan: ");
+		rewind(stdin); gets_s(newData.loaihp, sizeof(newData.loaihp));
+
+		printf("Nhap chu nhiem hoc phan: ");
+		rewind(stdin); gets_s(newData.chunhiemhp, sizeof(newData.chunhiemhp));
+
+		printf("Nhap chuyen nganh: ");
+		rewind(stdin); gets_s(newData.chuyennganh, sizeof(newData.chuyennganh));
+
+		// Ghi đè dữ liệu
+		p->Key = newData;
+
+		printf("\nCap nhat thanh cong!\n");
+	}
+	else
+	{
+		printf("Khong tim thay hoc phan co ma %s.\n", mahp);
+	}
+}
+//Câu7
+void resizeHashTable()
+{
+	int oldSize = currentSize;
+	currentSize *= 2;
+	NodePtr* newBucket = new NodePtr[currentSize];
+
+	for (int i = 0; i < currentSize; i++)
+		newBucket[i] = NULL;
+
+	for (int i = 0; i < oldSize; i++)
+	{
+		NodePtr p = bucket[i];
+		while (p != NULL)
+		{
+			int newIndex = p->Key.sotc % currentSize;
+			NodePtr temp = p;
+			p = p->Next;
+
+			temp->Next = newBucket[newIndex];
+			newBucket[newIndex] = temp;
+		}
+	}
+
+	delete[] bucket;
+	bucket = newBucket;
+}
+
+//Câu 8
+void xuatHocPhanTinChiLonHon(int x) {
+	int dem = 0;
+	printf("\n\t\t\t\tCAC HOC PHAN CO SO TIN CHI LON HON %d\n", x);
+	printf(" Ma\t\tTen hoc phan\t Tin chi\t  Loai\t\t  Chu nhiem\t\t    Chuyen Nganh\n");
 	for (int b = 0; b < MAXSIZE; b++) {
 		HashNode* p = bucket[b];
 		while (p != NULL) {
 			if (p->Key.sotc > x) {
 				xuat1hp(p->Key);
-				found = 1;
+				dem++;
 			}
 			p = p->Next;
 		}
 	}
 
-	if (!found)
-		printf("Khong co hoc phan nao co so tin chi lon hon %d.\n", x);
+	if (!dem)
+		printf("\nKhong co hoc phan nao co so tin chi lon hon %d.\n", x);
 }
 
+//Câu 9
+void tinhTongTinChiCNTT() {
+	int tong = 0;
+	for (int b = 0; b < MAXSIZE; b++) {
+		HashNode* p = bucket[b];
+		while (p != NULL) {
+			tong += p->Key.sotc;
+			p = p->Next;
+		}
+	}
+	viewTable();
+	printf("\nTong so tin chi cua cac hoc phan cua khoa CNTT: %d\n", tong);
+}
+
+//Câu 10
 
 
 void Menu()
 {
-	printf("\t\t-----------------------------------MENU---------------------------------\n");
+	printf("\n\t\t-----------------------------------MENU---------------------------------\n");
 	printf("\t\t\t1. Tao bang bam tu nhap.\n");
 	printf("\t\t\t2. Tao bang bam tu file txt.\n");
 	printf("\t\t\t3. Them mot phan tu.\n");
@@ -261,43 +373,88 @@ void Process()
 		scanf_s("%d", &option);
 		switch (option)
 		{
-			case 1:
+			case 1:{
 				nhapdulieu();
 				printf("\nXem bang bam:\n");
 				viewTable();
 				break;
-			case 2:
+			}
+			case 2:{
 				Docfile();
 				viewTable();
 				break;
-			case 3:
-				break;
-			
-			case 4: 
-			{
-				//char mahp[10];
-				//printf("Nhap ma hoc phan can xoa: ");
-				//rewind(stdin);
-				//gets_s(mahp, sizeof(mahp));  // dùng gets_s nếu Visual Studio báo lỗi gets
-				//if (DeleteHocPhan(mahp)) {
-					//printf("Da xoa hoc phan %s thanh cong.\n", mahp);
-					//printf("Danh sach hoc phan sau khi xoa:\n");
-					//viewTable();//}
-				//else {
-				//	printf("Khong tim thay hoc phan %s.\n", mahp);
+			}	
+			case 3:{
+				hocphan x;
+				printf("\tNhap thong tin hoc phan can them");
+				nhap1hp(x);
+				Insert(x);
+				printf("Da them thanh cong.\n");
+				viewTable();
 				break;
 			}
-			case 8: 
-			{
+			case 4: {
+				char mahp[10];
+				printf("Nhap ma hoc phan can xoa: ");
+				rewind(stdin);
+				gets_s(mahp, sizeof(mahp));  // dùng gets_s nếu Visual Studio báo lỗi gets
+				if (DeleteHocPhan(mahp)) {
+					printf("Da xoa hoc phan %s thanh cong.\n", mahp);
+					printf("Danh sach hoc phan sau khi xoa:\n");
+					viewTable();
+				}
+				else {
+					viewTable();
+					printf("Khong tim thay hoc phan %s.\n", mahp);
+				}
+				break;
+			}
+			
+			case 5:{
+				char mahp[10];
+				printf("Nhap ma hoc phan can tim: ");
+				rewind(stdin);
+				gets_s(mahp, sizeof(mahp));
+				NodePtr found = search(mahp);
+				printf(" Ma\t\tTen hoc phan\t Tin chi\t  Loai\t\t  Chu nhiem\t\t    Chuyen Nganh\n");
+				if (found != NULL) {
+					xuat1hp(found->Key);
+				}
+				else {
+					printf("Khong tim thay hoc phan co ma %s.\n", mahp);
+				}
+				break;
+			}
+
+			case 6:{
+				CapNhatHocPhan();
+				viewTable();
+				break;
+			}
+			case 7:{
+				printf("Dang thuc hien mo rong bang bam theo yeu cau.\n");
+				resizeHashTable();
+				printf("Mo rong thanh cong! Hien tai kich thuoc bang bam la: %d\n", currentSize);
+				viewTable();
+				break;
+			}
+			case 8: {
 				int x;
 				printf("Nhap so tin chi: ");
 				scanf("%d", &x);
 				xuatHocPhanTinChiLonHon(x);
 				break;
 			}
+			case 9: 
+			{
+				tinhTongTinChiCNTT();
+    			break;
+			}
+
 		}
 	} while (option != 0);
 }
+
 int main()
 {
 	Process();
