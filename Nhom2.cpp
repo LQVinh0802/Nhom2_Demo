@@ -344,11 +344,54 @@ void tinhTongTinChiCNTT() {
 }
 
 //Câu 10
+void thongKeTheoLoaiHocPhan() {
+	struct ThongKe {
+		char loaihp[20];
+		int soluong;
+		int tongtinchi;
+	} ds[50];
 
+	int dem = 0;
+
+	for (int b = 0; b < MAXSIZE; b++) {
+		HashNode* p = bucket[b];
+		while (p != NULL) {
+			int found = 0;
+			for (int i = 0; i < dem; i++) {
+				if (_stricmp(ds[i].loaihp, p->Key.loaihp) == 0) {
+					ds[i].soluong++;
+					ds[i].tongtinchi += p->Key.sotc;
+					found = 1;
+					break;
+				}
+			}
+			if (!found) {
+				strcpy(ds[dem].loaihp, p->Key.loaihp);
+				ds[dem].soluong = 1;
+				ds[dem].tongtinchi = p->Key.sotc;
+				dem++;
+			}
+			p = p->Next;
+		}
+	}
+
+	if (dem == 0) {
+		printf("\nKhong co du lieu de thong ke.\n");
+	}
+	else {
+		viewTable();
+		printf("\n\tThong ke theo tung loai hoc phan\n");
+		printf("%-17s %-12s  %-15s\n", "Loai hoc phan", "So luong", "Tong tin chi");
+		for (int i = 0; i < dem; i++) {
+			printf("%-20s %-15d %-15d\n", ds[i].loaihp, ds[i].soluong, ds[i].tongtinchi);
+		}
+	}
+}
 
 void Menu()
 {
 	printf("\n\t\t-----------------------------------MENU---------------------------------\n");
+	printf("\t\t\t0. Thoat chuong trinh.\n");
 	printf("\t\t\t1. Tao bang bam tu nhap.\n");
 	printf("\t\t\t2. Tao bang bam tu file txt.\n");
 	printf("\t\t\t3. Them mot phan tu.\n");
@@ -449,6 +492,11 @@ void Process()
 			{
 				tinhTongTinChiCNTT();
     			break;
+			}
+			case 10:
+			{
+				thongKeTheoLoaiHocPhan();
+				break;
 			}
 
 		}
